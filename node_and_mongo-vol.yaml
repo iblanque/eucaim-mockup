@@ -1,0 +1,61 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: dashboard-vol
+  labels:
+    type: local
+spec:
+  storageClassName: nfs-dashboard
+  persistentVolumeReclaimPolicy: Recycle
+  capacity:
+    storage: 150M
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.9
+    path: /mnt/nfs_share/mockup/dashboard
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dashboard-vol-pvc
+spec:
+  storageClassName: nfs-dashboard
+  volumeName: dashboard-vol
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50M
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: dashb-mongo-vol
+  labels:
+    type: local
+spec:
+  storageClassName: nfs-mongo-node
+  persistentVolumeReclaimPolicy: Recycle
+  capacity:
+    storage: 150M
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.9
+    path: /mnt/nfs_share/mockup/dashboard/mongo
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dashb-mongo-vol-pvc
+spec:
+  storageClassName: nfs-dashb-mongo
+  volumeName: dashb-mongo-vol
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50M

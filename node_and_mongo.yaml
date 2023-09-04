@@ -1,0 +1,71 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: eucaim-dashboard
+  labels:
+    app: eucaim-dashboard
+spec:
+  volumes:
+    - name: dashboard-vol
+      persistentVolumeClaim:
+        claimName: dashboard-vol-pvc
+  containers:
+  - name: node-dashboard
+    image: node    # Change this with the customized image name
+    volumeMounts:
+    - mountPath: /home/node/app  # Update it with the path where the data is stored
+      name: dashboard-vol
+    command: 
+    - npm
+    args:
+    - start
+    ports:
+    - containerPort: 8888
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dashb-node-service  # This is the name of the service for the DNS, change it accordingly.
+spec:
+  selector:
+    app: eucaim-dashboard
+  ports:
+  - protocol: TCP
+    port: 8888
+    targetPort: 8888
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: dashb-mongo
+  labels:
+    app: dashb-mongo
+spec:
+  volumes:
+    - name: dashb-mongo-vol
+      persistentVolumeClaim:
+        claimName: dashb-mongo-vol-pvc
+  containers:
+  - name: mongo-dashboard
+    image: mongo    # Change this with the customized image name
+    volumeMounts:
+    - mountPath: XXXXX # Add here the path where mongo stores the data for persistency
+      name: dashb-mongo-vol
+    command: 
+    - npm
+    args:
+    - start
+    ports:
+    - containerPort: 8888
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongo-service  # This is the name of the service for the DNS, change it accordingly.
+spec:
+  selector:
+    app: dashb-mongo
+  ports:
+  - protocol: TCP
+    port: XXXX         # Indicate the internal port number (within the container)
+    targetPort: XXX    # Indicate the external port number (to access the container from outside, it can be the same if there is no conflicting ones)
